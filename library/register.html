@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+   <title>Virtual Library</title>
+  <link href="css/templatemo_style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/coda-slider.css" type="text/css" charset="utf-8" /> 
+
+
+  <script  type ="text/javascript" >
+    con=new ActiveXObject("ADODB.Connection")
+constr="provider=microsoft.jet.oledb.4.0;data source=D:/Virtual Library/virlibrary.mdb";
+con.Open (constr)
+function clear1()
+{
+
+   rform.na.value="";
+   rform.add.value="";
+   rform.pno.value="";
+   rform.eid.value="";
+    rform.uname.value="";
+   rform.pwd.value="";
+    rform.cpwd.value="";
+ 
+}
+function autoid()
+{
+    var max=101;
+    var count=0;
+    str="select count(*) from reg";
+     rs=new ActiveXObject("ADODB.Recordset")
+    rs.open(str,con)
+    while(!rs.EOF)
+    {
+        count=parseInt(rs(0))
+        rs.MoveNext ()
+    }
+   // alert(count)
+    rs.Close ()
+    
+    if(count==0)
+    {
+       rform.uid.value=max;
+    }
+    else
+     {
+        str="select max(uid) from reg";
+     rs=new ActiveXObject("ADODB.Recordset")
+    rs.open(str,con)
+    while(!rs.EOF)
+    {
+        count=parseInt(rs(0))
+        rs.MoveNext ()
+    }
+     rs.close();
+    rform.uid.value=count+1;
+       
+     }
+
+ }
+function sign1()
+{
+  window.navigate("HomePage.html");
+ }
+function db()
+{
+  var eid=rform.eid.value;
+   var n=parseInt(eid.lastIndexOf(".com"));
+   var i=parseInt(eid.indexOf('@'));
+
+   if((i==-1)||(n==-1)||(i>n))
+    {
+       alert("Invalid EmailId");
+       rform.eid.value="";
+       rform.eid.focus();
+     
+    }
+}
+function db1()
+{
+   alert("Give Only Landline No");
+ }
+function db2()
+{
+    var n=rform.pno.value.length;
+  if(n>6)
+   {
+      alert("Invalid Phone No");
+      rform.pno.value="";
+      rform.pno.focus();
+   }
+   
+}
+function dbinsert()
+{
+  
+   var uid=rform.uid.value;
+   var na=rform.na.value;
+   var add=rform.add.value;
+   var pno=rform.pno.value;
+   var eid=rform.eid.value;
+   var uname=rform.uname.value;
+     var pwd=rform.pwd.value;
+   var cpwd=rform.cpwd.value;
+
+   if(pwd!=cpwd)
+   {
+      alert("Password and Confirm Password Must be Same!");
+   
+    rform.pwd.value="";
+    rform.cpwd.value="";
+    rform.pwd.focus();
+    }
+  else
+  {
+     str="insert into reg values("+uid+",'"+na+"','"+add+"',"+pno+",'"+eid+"','"+uname+"','"+pwd+"','"+cpwd+"')";
+     con.Execute(str);
+     alert("New User Details Inserted......");
+  }
+
+ }
+</script>
+
+
+</head>
+<body onLoad="autoid()">
+
+<table border ="0" align="center" >
+<tr>
+<td><div id="templatemo_header">
+          <br /><br />
+          <h1 style="font-size: 500%;font-family:Monotype Corsiva;text-align:center" >
+              <span style="color: #ffff99"><span style="color: #ffff99 ">VIRTUAL</span><span style="color: #ffff99">
+                  LIBRARY</span></span></h1></div></td>
+</tr>
+<tr>
+<td>
+<div ></div>
+</td>
+</tr>
+    <tr>
+        <td>
+        
+        <div >
+ <br /><br /><br />
+
+<form name=rform>
+<table style="font-family:Times New Roman;font-size:x-large;color:black;" align="center"  border=10 cellspacing=5 cellpadding=10>
+        <tr>
+            <td colspan="2">
+                <center>REGISTRAION</td>
+        </tr>
+  
+        <tr>
+            <td>
+               User Id</td>
+                <td>
+                    <input type=text name=uid></td>
+        </tr>
+        
+        <tr>
+            <td>
+               Name</td>
+                <td>
+                    <input type=text name=na></td>
+        </tr>
+         <tr>
+            <td>
+              Address</td>
+            <td>
+              <textarea name=add rows=3 cols=15>
+              </textarea></td>
+        </tr>
+      <tr>
+            <td>
+             Phone No</td>
+            <td>
+              <input type=text name=pno onfocus=db1() onblur=db2()></td>
+        </tr>
+        <tr>
+            <td>
+              Email_Id</td>
+            <td>
+              <input type=text name=eid onblur=db()></td>
+        </tr>
+         <tr>
+            <td>
+               UserName</td>
+            <td >
+               <input type=text name=uname></td>
+        </tr>
+         <tr>
+            <td>
+              Password
+            </td>
+            <td >
+               <input type=password name=pwd></td>
+        </tr>
+         <tr>
+            <td>
+              Confirm Password</td>
+            <td >
+               <input type=password name=cpwd></td>
+        </tr>
+        
+        <tr>
+            <td colspan=2> 
+               <center>
+               <input type=submit value="Register" onClick="dbinsert()">
+            
+               <input type=button value="Reset" onClick="clear1()">
+                <input type=button value="Home Page" onClick="sign1()"></center></td>
+        </tr>
+        
+    </table>
+</form>
+
+        </div>
+        </td>
+    </tr>
+
+</table>
+
+
+  
+    <div>
+    
+    </div>
+   
+</body>
+</html>

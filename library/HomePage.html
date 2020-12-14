@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+   <title>Vitual Library</title>
+  <link href="css/templatemo_style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/coda-slider.css" type="text/css" charset="utf-8" /> 
+
+
+ <script  type ="text/javascript" >
+    con=new ActiveXObject("ADODB.Connection")
+constr="provider=microsoft.jet.oledb.4.0;data source=D:/Virtual Library/virlibrary.mdb";
+con.Open (constr)
+function clear1()
+{
+      f1.uname.value="";
+       f1.pwd.value="";  
+
+}
+function reg()
+{
+  window.navigate("register.html");
+  }
+function login1()
+{
+   var uname=f1.uname.value;
+   var pwd=f1.pwd.value;
+  
+      if((uname=="Admin" && pwd=="Admin")||(uname=="admin" && pwd=="admin"))
+      {
+        window.navigate("admin.html")
+       }
+     
+     else
+     {
+          alert("Invalid UserName & Password");
+          f1.uname.value="";
+          f1.pwd.value="";
+      }
+   
+   }
+function login2()
+{
+         
+       var uname=f1.uname.value;
+        var pwd=f1.pwd.value;
+          var flag=0;
+          str="select uname,pwd from reg";
+         rs=new ActiveXObject("ADODB.Recordset")
+         rs.open(str,con)
+        while(!rs.EOF)
+        {
+          var s=rs("uname");
+          var s1=rs("pwd");
+           if((uname==s)&&(pwd==s1))
+           {
+              flag=1;
+             // window.navigate("bookentry.html")
+               window.open("user.html");
+             // b=window.open("return.html");
+            // a.bform.uname.value=f1.uname.value;
+             // a.bform.pwd.value=f1.pwd.value;
+              break;
+           }
+        rs.MoveNext ()
+      }
+       rs.close();
+   if(flag==0)
+    {
+         alert("Invalid UserName & Password");
+          f1.uname.value="";
+          f1.pwd.value="";  
+
+     }  
+ }   
+</script>
+
+
+</head>
+<body>
+
+<table border ="0" align="center" >
+<tr>
+<td><div id="templatemo_header">
+          <br /><br />
+          <h1 style="font-size: 500%;font-family:Monotype Corsiva;text-align:center" >
+              <span style="color: #ff33cc"><span style="color: #ffff33">VIRTUAL</span><span style="color: #ffff99">
+                  LIBRARY</span></span></h1></div></td>
+</tr>
+<tr>
+<td>
+<div ></div>
+</td>
+</tr>
+    <tr>
+        <td>
+        
+        <div >
+ <br /><br /><br />
+        <form name=f1>
+       <table style="font-family:Times New Roman;font-size:x-large;color="white";absolute;top:228px; left: 341px; z-index: 100; position: absolute;" align="center"  border=10 cellspacing=5 cellpadding=10>
+               <tr><th colspan="2">Sign In</th></tr>
+ 	<tr>
+ 	<tr>
+                     <td>User Name</td>
+                     <td><input type=text name=uname></td>
+                 </tr>
+                 <tr>
+                        <td>Password</td>
+                       <td><input type=password name=pwd></td>
+                   </tr>
+                </tr>
+                <tr>
+            <td colspan=2> 
+               <center>
+                 <input type=button value="Register" onClick="reg()">
+               <input type=button value="Admin" onClick="login1()">
+                 <input type=button value="User" onClick="login2()">
+                 
+               <input type=button value="Clear" onClick="clear1()"></center>
+           </td>
+        </tr>
+   </table>
+ </form>
+        
+        </div>
+        </td>
+    </tr>
+
+</table>
+
+
+  
+    <div>
+    
+    </div>
+   
+</body>
+</html>

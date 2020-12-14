@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+   <title>Vitual Library</title>
+  <link href="css/templatemo_style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/coda-slider.css" type="text/css" charset="utf-8" /> 
+
+ <script  type ="text/javascript" >
+    con=new ActiveXObject("ADODB.Connection")
+constr="provider=microsoft.jet.oledb.4.0;data source=D:/Virtual Library/virlibrary.mdb";
+con.Open (constr)
+function clear1()
+{
+
+   f1.bname.value="";
+   f1.author.value="";
+   f1.edition.value="";
+   f1.isbn.value="";
+   f1.amt.value="";
+
+  f1.s1.selectedIndex=0;
+ 
+}
+function db()
+{
+  alert("ISBN must be a 6 Digit");
+
+ }
+function db1()
+{
+   var n=f1.isbn.value.length;
+   if((n<6)||(n>6))
+   {
+    alert("Invalid ISBN");
+    f1.isbn.value="";
+    f1.isbn.focus();
+  }
+ }
+function autoid()
+{
+    var max=2001;
+    var count=0;
+    str="select count(*) from bookentry";
+     rs=new ActiveXObject("ADODB.Recordset")
+    rs.open(str,con)
+    while(!rs.EOF)
+    {
+        count=parseInt(rs(0))
+        rs.MoveNext ()
+    }
+   // alert(count)
+    rs.Close ()
+    
+    if(count==0)
+    {
+       f1.bid.value=max;
+    }
+    else
+     {
+        str="select max(bookid) from bookentry";
+     rs=new ActiveXObject("ADODB.Recordset")
+    rs.open(str,con)
+    while(!rs.EOF)
+    {
+        count=parseInt(rs(0))
+        rs.MoveNext ()
+    }
+     rs.close();
+    f1.bid.value=count+1;
+       
+     }
+
+ }
+
+function dbinsert()
+{
+   var bid=parseInt(f1.bid.value);
+   var bname=f1.bname.value;
+   var author=f1.author.value;
+   var edition=parseInt(f1.edition.value);
+   var isbn=parseInt(f1.isbn.value);
+   var amt=parseInt(f1.amt.value);
+  var flag=1;
+   var cat=f1.s1.options[f1.s1.selectedIndex].text;
+     str="insert into bookentry(BookId,BookName,Author,Edition,ISBN,Amount,Category,redate,rdate) values("+bid+",'"+bname+"','"+author+"','"+edition+"',"+isbn+","+amt+",'"+cat+"','NULL','NULL')";
+     con.Execute(str);
+    
+          str="select bname,author,edition,category,nbook,rbook from tvbook";
+         rs=new ActiveXObject("ADODB.Recordset")
+         rs.open(str,con)
+        
+        while(!rs.EOF)
+        {
+          var s=rs("bname");
+          var s1=rs("author");
+          var n=rs("edition");
+           var ct=rs("nbook");
+           var rb=rs("rbook");
+         
+           if((bname==s)&&(author==s1)&&(n==edition))
+           {
+            
+              flag=ct+1;
+              rb=rb+1;
+               break;
+
+           }
+        rs.MoveNext ()
+      }
+       rs.close();
+      
+   if(flag==1)
+    {
+
+      str="insert into tvbook(bname,author,edition,isbn,amount,category,nbook,rbook) values('"+bname+"','"+author+"',"+edition+","+isbn+","+amt+",'"+cat+"',"+flag+","+flag+")";
+      con.Execute(str);
+    
+     } 
+  else
+  {
+      str="update tvbook set nbook="+flag+",rbook="+rb+" where bname='"+bname+"' and author='"+author+"' and edition="+edition;
+      con.Execute(str);
+   } 
+     alert("New Book Details Inserted......");
+ }
+</script>
+
+
+</head>
+<body onLoad=autoid()> 
+
+<table border ="0" align="center" >
+<tr>
+<td><div id="templatemo_header">
+          <br /><br /><br />
+          <h1 style="font-size: 500%;font-family:Monotype Corsiva;text-align:center" >
+              <span style="color: #ff33cc"><span style="color: #ffff33">VIRTUAL</span><span style="color: #ffff99">
+                  LIBRARY</span></span></h1></div></td>
+</tr>
+<tr>
+<td>
+<div >
+   <table style="position: static; width: 784px;" align="center" id="TABLE1" >
+        <tr>
+            <td rowspan="2" style="height: 19px">
+                &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp  &nbsp&nbsp
+                <a href="Homepage.html"><span style="font-size: 15pt; font-family: Times New Roman">
+                    Home Page </span></a>
+                     <a href="bookentry.html"><span style="font-size: 15pt; font-family: Times New Roman">
+                                        |BooksEntry</span></a>
+                     <a href="viewbook.html"><span style="font-size: 15pt; font-family: Times New Roman">
+                        | View Books</span></a><span style="font-size: 15pt; font-family: Times New Roman">
+                        
+                                        </span><a href="Homepage.html"><span style="font-size: 15pt; font-family: Times New Roman">
+                                            | Logout</span></a><span style="font-size: 15pt; font-family: Times New Roman"> </span>
+            </td>
+        </tr>
+        <tr>
+        </tr>
+</table> 
+</div>
+</td>
+</tr>
+    <tr>
+        <td>
+        
+        <div >
+       <br /><br /><br />
+
+<form name=f1>
+<table style="font-family:Times New Roman;font-size:x-large;color:black;" align="center"  border=10 cellspacing=5 cellpadding=10>
+        <tr>
+            <td colspan="2">
+                <center>BOOK INFORMATION</td>
+        </tr>
+        <tr>
+            <td>
+                Book Id</td>
+                <td>
+                    <input type=text name=bid></td>
+        </tr>
+         <tr>
+            <td>
+                Book Name</td>
+            <td>
+              <input type=text name=bname></td>
+        </tr>
+         <tr>
+            <td>
+                Author</td>
+            <td >
+               <input type=text name=author></td>
+        </tr>
+         <tr>
+            <td>
+               Edition
+            </td>
+            <td >
+               <input type=text name=edition></td>
+        </tr>
+         <tr>
+            <td>
+               ISBN</td>
+            <td >
+               <input type=text name=isbn onfocus=db() onblur=db1()></td>
+        </tr>
+         <tr>
+            <td>
+               Amount</td>
+            <td >
+               <input type=text name=amt></td>
+        </tr>
+        
+   
+        <tr>
+            <td>
+                Category</td>
+            <td>
+                <select name=s1>
+                      <option>---Select---</option>
+                    <option value="Science">Science</option>
+                       <option value="Computer">Computer</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Health And Care">Health And Care</option>
+                    <option value="Novels">Novels</option>
+                    <option value="Stories">Stories</option>
+                 </select>
+        </tr>
+        <tr>
+            <td colspan=2> 
+               <center>
+               <input type=button value="Submit" onClick="dbinsert()">
+            
+               <input type=button value="Reset" onClick="clear1()"></td>
+        </tr>
+        
+    </table>
+</form>
+
+        
+        </div>
+        </td>
+    </tr>
+
+</table>
+
+
+  
+    <div>
+    
+    </div>
+   
+</body>
+</html>
+
